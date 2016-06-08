@@ -5,6 +5,8 @@ Written in [elm-lang](http://elm-lang.org/).
 
 [video demo](https://cloudup.com/ceqHFQ7HUJN)
 
+![alt tag](https://github.com/chrisbuttery/slackm8/blob/master/slackm8.png)
+
 ### Why?
 
 This specific use case is handy approach to grouping random members together
