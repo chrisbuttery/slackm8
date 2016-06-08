@@ -27,7 +27,7 @@ optionValues max =
 renderDescription : Html Msg
 renderDescription =
   div [ class "description" ] [
-    p [] [ text "Randomly shuffle & split a team into groups & invite Members to Slack channels"]
+    p [] [ text "Randomly shuffle a team into groups & invite members to Slack channels"]
   ]
 
 

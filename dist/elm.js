@@ -9405,7 +9405,7 @@ var _chrisbuttery$slackm8$View$renderDescription = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('Randomly shuffle & split a team into groups & invite Members to Slack channels')
+					_elm_lang$html$Html$text('Randomly shuffle a team into groups & invite members to Slack channels')
 				]))
 		]));
 var _chrisbuttery$slackm8$View$optionValues = function (max) {
