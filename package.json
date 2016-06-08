@@ -1,0 +1,23 @@
+{
+  "name": "slackm8",
+  "version": "1.0.0",
+  "description": "Randomly shuffle & split a team into groups & invite users to Slack channels",
+  "main": "index.js",
+  "scripts": {
+    "build": "elm-make src/Main.elm --output dist/elm.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisbuttery/slackm8.git"
+  },
+  "author": "Chris Buttery <info@chrisbuttery.com> (http://www.chrisbuttery.com)",
+  "bugs": {
+    "url": "https://github.com/chrisbuttery/slackm8/issues"
+  },
+  "homepage": "https://github.com/chrisbuttery/slackm8",
+  "license": "MIT",
+  "devDependencies": {
+    "elm": "^0.17.0"
+  },
+  "private": true
+}
