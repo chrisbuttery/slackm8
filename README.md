@@ -85,7 +85,7 @@ test = [1,2,3,4,5]
 // desired output [[1,2], [2,3], [5]]
 ```
 
-[I've commented on how I understand this function to work](). I could have gotten it awfully wrong, so I'm happy for anyone to correct me.
+[I've commented on how I understand this function to work](https://github.com/chrisbuttery/slackm8/blob/master/src/Split.elm). I could have gotten it awfully wrong, so I'm happy for anyone to correct me.
 
 
 ## development
