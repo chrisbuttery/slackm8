@@ -88,7 +88,7 @@ test = [1,2,3,4,5]
 [I've commented on how I understand this function to work](https://github.com/chrisbuttery/slackm8/blob/master/src/Split.elm). I could have gotten it awfully wrong, so I'm happy for anyone to correct me.
 
 
-## development
+## Development
 
 Source files located in `/src`
 
