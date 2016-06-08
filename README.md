@@ -100,7 +100,7 @@ Source files located in `/src`
 ## Todo
 
 - [ ] On select event, get selected option value and not selectedIndex
-- [ ] Add nicer styling to everything
+- [ ] Add nicer styling to everything because I've literally done the bare minimum for this demo
 - [ ] Add nicer UI interactions
 
 ## Acknowledgements
