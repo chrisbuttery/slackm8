@@ -82,7 +82,7 @@ myList = [1,2,3,4,5]
 ```
 
 Ideally I wanted to specify how many lists `myList` would could be broken up into.  
-[I've commented on how I understand this function to work](https://github.com/chrisbuttery/slackm8/blob/master/src/Split.elm). I could have gotten it awfully wrong, so I'm happy for anyone to correct me.
+[I've commented on how I understand this function to work](https://github.com/chrisbuttery/slackm8/blob/master/src/Split.elm). I could have got it awfully wrong, so I'm happy for anyone to correct me.
 
 
 ## Development
