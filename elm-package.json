@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "Randomly shuffle & split a team into groups & invite users to Slack channels",
+    "summary": "Randomly shuffle a team into groups & invite members to Slack channels",
     "repository": "https://github.com/chrisbuttery/slackm8.git",
     "license": "BSD3",
     "source-directories": [
