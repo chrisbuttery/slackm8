@@ -21,7 +21,7 @@ My workplace likes to set up random groups of members for quick chats to promote
 
 ## Slack API authorization test token
 
-To try this example out you'll need to grab an API authorization test token for your slack team. https://api.slack.com/web.
+To try this example out you'll need to be the administrator of your Slack team & create an API authorization test token here. https://api.slack.com/web. 
 
 This will allow _slackm8_ to make 3 types of http requests to your slack team.
 
