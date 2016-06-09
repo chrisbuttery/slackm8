@@ -9594,7 +9594,7 @@ var _chrisbuttery$slackm8$View$renderMain = function (model) {
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('Channels have been created and member shave successfully been invited!')
+								_elm_lang$html$Html$text('Channels have been created and members have successfully been invited!')
 							])),
 						A2(
 						_elm_lang$html$Html$span,

@@ -182,7 +182,7 @@ renderMain model =
       , span [ class "close", onClick Close ] [ text "close"]
     ]
     , div [ classList [( "success", True), ("hidden", model.success == False), ("inline-block", model.success == True)] ] [
-      p [ class "message" ] [ text "Channels have been created and member shave successfully been invited!"]
+      p [ class "message" ] [ text "Channels have been created and members have successfully been invited!"]
       , span [ class "close", onClick Close ] [ text "close"]
     ]
     , renderGroups model.title model.groups
