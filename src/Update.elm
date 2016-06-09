@@ -44,13 +44,23 @@ update msg model =
       model ! List.map (inviteMember token roomID << .id) group
 
     CreateChannelFail err ->
-      ({ model | error = True, message = toString err }, Cmd.none)
+      ({ model
+        | error = True
+        , message = toString err
+        }, Cmd.none)
 
     InviteMemberFail err ->
-      ({ model | error = True, message = toString err }, Cmd.none)
+      ({ model
+        | error = True
+        , message = toString err
+        }, Cmd.none)
 
     InviteMemberSuccess bool ->
-      ({ model | error = False, message = "", success = True }, Cmd.none)
+      ({ model
+        | error = False
+        , message = ""
+        , success = True
+        }, Cmd.none)
 
     StoreToken token ->
       ({ model | token = token }, Cmd.none)
@@ -67,16 +77,17 @@ update msg model =
         filtered =
           filterMembers result
       in
-        ({ model |
-          isLoading = False
+        ({ model
+          | isLoading = False
           , limit = List.length result
           , team = Just filtered
           , error = False
-          , message = "" }, Random.generate Split (shuffle filtered))
+          , message = ""
+          }, Random.generate Split (shuffle filtered))
 
     FetchMembersFail err ->
-      ({ model |
-        isLoading = False
+      ({ model
+        | isLoading = False
         , message = toString err
         , error = True }, Cmd.none)
 
@@ -122,8 +133,8 @@ update msg model =
         (model', Ports.modelChange model')
 
     Close ->
-      ({ model |
-        error = False
+      ({ model
+        | error = False
         , success = False
         , message = "" }, Cmd.none)
 
