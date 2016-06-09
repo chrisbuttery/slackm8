@@ -70,7 +70,7 @@ update msg model =
         ({ model |
           isLoading = False
           , limit = List.length result
-          , team = filtered
+          , team = Just filtered
           , error = False
           , message = "" }, Random.generate Split (shuffle filtered))
 
@@ -91,7 +91,11 @@ update msg model =
         (model', Ports.modelChange model')
 
     Shuffle ->
-      (model, Random.generate Split (shuffle model.team))
+      case model.team of
+        Just team ->
+          (model, Random.generate Split (shuffle team))
+        Nothing ->
+          (model, Cmd.none)
 
     SetLimit num ->
       let

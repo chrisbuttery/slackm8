@@ -133,7 +133,7 @@ renderActions model =
                 option [ selected (model.limit == val), value (toString val) ] [
                   text (toString val)
                 ]
-              ) (optionValues (List.length model.team)))
+              ) (optionValues (List.length (Maybe.withDefault [] model.team))))
           ]
           , button
             [ classNames ["btn", "inline-block" ], disabled isDisabled , (onClick Shuffle) ]
@@ -202,15 +202,14 @@ renderHeader =
 -- renderRefreshActions
 -- render the "Refetch Team" button
 
-renderRefreshActions : Model -> Html Msg
-renderRefreshActions model =
+renderRefreshActions : List Member -> Html Msg
+renderRefreshActions team =
   div
-    [ classList [("action--refresh", True), ("hidden", model.team == [])] ] [
+    [ classList [("action--refresh", True), ("hidden", team == [])] ] [
       button [
         classNames ["btn", "btn--text"]
         , onClick FetchMembers ] [ text "Refetch Team" ]
     ]
-
 
 -- view
 -- give them something to look at
@@ -218,8 +217,11 @@ renderRefreshActions model =
 view : Model -> Html Msg
 view model =
   let
+    team =
+      Maybe.withDefault [] model.team
+
     renderView =
-      if model.token == "" || model.team == []
+      if model.token == "" || team == []
       then renderTokenForm
       else renderMain
   in
@@ -227,8 +229,8 @@ view model =
       div [ classNames ["column",  "u-p-lrg"] ] [
         renderHeader
         , renderDescription
-        , renderTeam model.team model.isLoading
-        , renderRefreshActions model
+        , renderTeam team model.isLoading
+        , renderRefreshActions team
       ]
       , div [ class "main" ] [
         renderView model

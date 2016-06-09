@@ -1,5 +1,6 @@
 module Model exposing (..)
 
+
 type alias Member =
   { id : String
   , team_id : String
@@ -22,7 +23,7 @@ type alias Model =
   , groups : List (List Member)
   , isLoading : Bool
   , limit : Int
-  , team : (List Member)
+  , team : Maybe (List Member)
   , title : String
   , token : String
   , success : Bool
@@ -38,7 +39,7 @@ model =
   , groups = []
   , isLoading = False
   , limit = 1
-  , team = []
+  , team = Nothing
   , title = "Room"
   , token = ""
   , success = False
