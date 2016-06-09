@@ -21,7 +21,7 @@ My workplace likes to set up random groups of members for quick chats to promote
 
 ## Slack API authorization test token
 
-To try this example out you'll need to be the administrator of your Slack team & create an API authorization test token here. https://api.slack.com/web. 
+To try this example out you'll need to be the administrator of your Slack team & create an API authorization test token here. https://api.slack.com/web.
 
 This will allow _slackm8_ to make 3 types of http requests to your slack team.
 
@@ -99,6 +99,8 @@ Source files located in `/src`
 - [ ] On select event, get selected option value and not selectedIndex
 - [ ] Add nicer styling to everything because I've literally done the bare minimum for this demo
 - [ ] Add nicer UI interactions
+- [ ] decode error response
+- [ ] style loading state on team refresh
 
 ## Acknowledgements
 
