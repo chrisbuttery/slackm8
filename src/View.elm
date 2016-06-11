@@ -91,20 +91,24 @@ renderGroupMember member =
 
 renderTokenForm : Model -> Html Msg
 renderTokenForm model =
-  div [ class "actions--token" ] [
-    p [] [ text "Enter your Slack API authorization test token"]
-    , div [ classList [( "error", True), ("hidden", model.error == False), ("inline-block", model.error == False)]] [
-      p [ class "message" ] [ text model.message ]
-      , span [ class "close", onClick Close ] [ text "close"]
+  let
+    error =
+      Maybe.withDefault "" model.error
+  in
+    div [ class "actions--token" ] [
+      p [] [ text "Enter your Slack API authorization test token"]
+      , div [ classList [( "error", True), ("hidden", error == ""), ("inline-block", error /= "")]] [
+        p [ class "message" ] [ text error ]
+        , span [ class "close", onClick Close ] [ text "close"]
+      ]
+      , div [] [
+        input [
+          placeholder "xoxp-123456...",
+          onInput StoreToken
+        ] []
+        , button [ classNames ["btn"], onClick FetchMembers ] [ text "Fetch Team" ]
+      ]
     ]
-    , div [] [
-      input [
-        placeholder "xoxp-123456...",
-        onInput StoreToken
-      ] []
-      , button [ classNames ["btn"], onClick FetchMembers ] [ text "Fetch Team" ]
-    ]
-  ]
 
 
 -- renderActions
@@ -175,18 +179,22 @@ renderLoading isLoading =
 
 renderMain : Model -> Html Msg
 renderMain model =
-  div [] [
-    renderActions model
-    , div [ classList [( "error", True), ("hidden", model.error == False)]] [
-      p [ class "message" ] [ text model.message ]
-      , span [ class "close", onClick Close ] [ text "close"]
+  let
+    error =
+      Maybe.withDefault "" model.error
+  in
+    div [] [
+      renderActions model
+      , div [ classList [( "error", True), ("hidden", error == "")]] [
+        p [ class "message" ] [ text error ]
+        , span [ class "close", onClick Close ] [ text "close"]
+      ]
+      , div [ classList [( "success", True), ("hidden", model.success == False), ("inline-block", model.success == True)] ] [
+        p [ class "message" ] [ text "Channels have been created and members have successfully been invited!"]
+        , span [ class "close", onClick Close ] [ text "close"]
+      ]
+      , renderGroups model.title model.groups
     ]
-    , div [ classList [( "success", True), ("hidden", model.success == False), ("inline-block", model.success == True)] ] [
-      p [ class "message" ] [ text "Channels have been created and members have successfully been invited!"]
-      , span [ class "close", onClick Close ] [ text "close"]
-    ]
-    , renderGroups model.title model.groups
-  ]
 
 
 -- renderHeader

@@ -18,15 +18,14 @@ type alias Group =
 
 
 type alias Model =
-  { error : Bool
-  , message : String
+  { error : Maybe String
   , groups : List (List Member)
   , isLoading : Bool
   , limit : Int
+  , success : Bool
   , team : Maybe (List Member)
   , title : String
   , token : String
-  , success : Bool
   }
 
 
@@ -34,13 +33,12 @@ type alias Model =
 
 model : Model
 model =
-  { error = False
-  , message = ""
+  { error = Nothing
   , groups = []
   , isLoading = False
   , limit = 1
+  , success = False
   , team = Nothing
   , title = "Room"
   , token = ""
-  , success = False
   }

@@ -8045,16 +8045,15 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
 var _chrisbuttery$slackm8$Model$model = {
-	error: false,
-	message: '',
+	error: _elm_lang$core$Maybe$Nothing,
 	groups: _elm_lang$core$Native_List.fromArray(
 		[]),
 	isLoading: false,
 	limit: 1,
+	success: false,
 	team: _elm_lang$core$Maybe$Nothing,
 	title: 'Room',
-	token: '',
-	success: false
+	token: ''
 };
 var _chrisbuttery$slackm8$Model$Member = F6(
 	function (a, b, c, d, e, f) {
@@ -8064,9 +8063,9 @@ var _chrisbuttery$slackm8$Model$Group = F2(
 	function (a, b) {
 		return {title: a, group: b};
 	});
-var _chrisbuttery$slackm8$Model$Model = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {error: a, message: b, groups: c, isLoading: d, limit: e, team: f, title: g, token: h, success: i};
+var _chrisbuttery$slackm8$Model$Model = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {error: a, groups: b, isLoading: c, limit: d, success: e, team: f, title: g, token: h};
 	});
 
 var _chrisbuttery$slackm8$Helpers$classNames = function (strings) {
@@ -8720,8 +8719,7 @@ var _chrisbuttery$slackm8$Ports$modelChange = _elm_lang$core$Native_Platform.out
 	'modelChange',
 	function (v) {
 		return {
-			error: v.error,
-			message: v.message,
+			error: (v.error.ctor === 'Nothing') ? null : v.error._0,
 			groups: _elm_lang$core$Native_List.toArray(v.groups).map(
 				function (v) {
 					return _elm_lang$core$Native_List.toArray(v).map(
@@ -8731,13 +8729,13 @@ var _chrisbuttery$slackm8$Ports$modelChange = _elm_lang$core$Native_Platform.out
 				}),
 			isLoading: v.isLoading,
 			limit: v.limit,
+			success: v.success,
 			team: (v.team.ctor === 'Nothing') ? null : _elm_lang$core$Native_List.toArray(v.team._0).map(
 				function (v) {
 					return {id: v.id, team_id: v.team_id, name: v.name, real_name: v.real_name, avatar_sml: v.avatar_sml, avatar_lrg: v.avatar_lrg};
 				}),
 			title: v.title,
-			token: v.token,
-			success: v.success
+			token: v.token
 		};
 	});
 var _chrisbuttery$slackm8$Ports$logExternalOut = _elm_lang$core$Native_Platform.outgoingPort(
@@ -8750,11 +8748,6 @@ var _chrisbuttery$slackm8$Ports$logExternal = function (value) {
 		_elm_lang$core$Basics$toString(value));
 };
 
-var _chrisbuttery$slackm8$Update$decodeError = A2(
-	_elm_lang$core$Json_Decode$at,
-	_elm_lang$core$Native_List.fromArray(
-		['error']),
-	_elm_lang$core$Json_Decode$string);
 var _chrisbuttery$slackm8$Update$decodeInviteMemberResponse = A2(
 	_elm_lang$core$Json_Decode$at,
 	_elm_lang$core$Native_List.fromArray(
@@ -8789,10 +8782,73 @@ var _chrisbuttery$slackm8$Update$decodeMembersResponse = A2(
 	_elm_lang$core$Native_List.fromArray(
 		['members']),
 	_elm_lang$core$Json_Decode$list(_chrisbuttery$slackm8$Update$decodeMembers));
-var _chrisbuttery$slackm8$Update$Close = {ctor: 'Close'};
+var _chrisbuttery$slackm8$Update$handleHttpError = F2(
+	function (err, model) {
+		var _p0 = err;
+		switch (_p0.ctor) {
+			case 'Timeout':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							error: _elm_lang$core$Maybe$Just('Timeout'),
+							isLoading: false
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'NetworkError':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							error: _elm_lang$core$Maybe$Just('Network Error'),
+							isLoading: false
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UnexpectedPayload':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							error: _elm_lang$core$Maybe$Just(_p0._0),
+							isLoading: false
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							error: _elm_lang$core$Maybe$Just(_p0._1),
+							isLoading: false
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _chrisbuttery$slackm8$Update$StoreToken = function (a) {
+	return {ctor: 'StoreToken', _0: a};
+};
+var _chrisbuttery$slackm8$Update$Split = function (a) {
+	return {ctor: 'Split', _0: a};
+};
+var _chrisbuttery$slackm8$Update$Shuffle = {ctor: 'Shuffle'};
+var _chrisbuttery$slackm8$Update$SetTitle = function (a) {
+	return {ctor: 'SetTitle', _0: a};
+};
+var _chrisbuttery$slackm8$Update$SetLimit = function (a) {
+	return {ctor: 'SetLimit', _0: a};
+};
 var _chrisbuttery$slackm8$Update$InviteMemberSuccess = function (a) {
 	return {ctor: 'InviteMemberSuccess', _0: a};
 };
+var _chrisbuttery$slackm8$Update$InviteMembersToChannels = {ctor: 'InviteMembersToChannels'};
 var _chrisbuttery$slackm8$Update$InviteMemberFail = function (a) {
 	return {ctor: 'InviteMemberFail', _0: a};
 };
@@ -8820,6 +8876,23 @@ var _chrisbuttery$slackm8$Update$inviteMember = F3(
 								A2(_elm_lang$core$Basics_ops['++'], '&user=', user_id))))),
 				_evancz$elm_http$Http$empty));
 	});
+var _chrisbuttery$slackm8$Update$FetchMembersSucceed = function (a) {
+	return {ctor: 'FetchMembersSucceed', _0: a};
+};
+var _chrisbuttery$slackm8$Update$FetchMembersFail = function (a) {
+	return {ctor: 'FetchMembersFail', _0: a};
+};
+var _chrisbuttery$slackm8$Update$fetchAllMembers = function (token) {
+	return A3(
+		_elm_lang$core$Task$perform,
+		_chrisbuttery$slackm8$Update$FetchMembersFail,
+		_chrisbuttery$slackm8$Update$FetchMembersSucceed,
+		A2(
+			_evancz$elm_http$Http$get,
+			_chrisbuttery$slackm8$Update$decodeMembersResponse,
+			A2(_elm_lang$core$Basics_ops['++'], 'https://slack.com/api/users.list?token=', token)));
+};
+var _chrisbuttery$slackm8$Update$FetchMembers = {ctor: 'FetchMembers'};
 var _chrisbuttery$slackm8$Update$CreateChannelSuccess = F3(
 	function (a, b, c) {
 		return {ctor: 'CreateChannelSuccess', _0: a, _1: b, _2: c};
@@ -8854,37 +8927,67 @@ var _chrisbuttery$slackm8$Update$createChannel = F4(
 									_elm_lang$core$Basics$toString(idx + 1)))))),
 				_evancz$elm_http$Http$empty));
 	});
-var _chrisbuttery$slackm8$Update$InviteMembersToChannels = {ctor: 'InviteMembersToChannels'};
-var _chrisbuttery$slackm8$Update$StoreToken = function (a) {
-	return {ctor: 'StoreToken', _0: a};
-};
-var _chrisbuttery$slackm8$Update$FetchMembersFail = function (a) {
-	return {ctor: 'FetchMembersFail', _0: a};
-};
-var _chrisbuttery$slackm8$Update$FetchMembersSucceed = function (a) {
-	return {ctor: 'FetchMembersSucceed', _0: a};
-};
-var _chrisbuttery$slackm8$Update$fetchAllMembers = function (token) {
-	return A3(
-		_elm_lang$core$Task$perform,
-		_chrisbuttery$slackm8$Update$FetchMembersFail,
-		_chrisbuttery$slackm8$Update$FetchMembersSucceed,
-		A2(
-			_evancz$elm_http$Http$get,
-			_chrisbuttery$slackm8$Update$decodeMembersResponse,
-			A2(_elm_lang$core$Basics_ops['++'], 'https://slack.com/api/users.list?token=', token)));
-};
-var _chrisbuttery$slackm8$Update$FetchMembers = {ctor: 'FetchMembers'};
-var _chrisbuttery$slackm8$Update$SetTitle = function (a) {
-	return {ctor: 'SetTitle', _0: a};
-};
-var _chrisbuttery$slackm8$Update$Split = function (a) {
-	return {ctor: 'Split', _0: a};
-};
 var _chrisbuttery$slackm8$Update$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'Close':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{error: _elm_lang$core$Maybe$Nothing, success: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'CreateChannelFail':
+				return A2(_chrisbuttery$slackm8$Update$handleHttpError, _p1._0, model);
+			case 'CreateChannelSuccess':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					A2(
+						_elm_lang$core$List$map,
+						function (_p2) {
+							return A3(
+								_chrisbuttery$slackm8$Update$inviteMember,
+								_p1._1,
+								_p1._2,
+								function (_) {
+									return _.id;
+								}(_p2));
+						},
+						_p1._0));
+			case 'FetchMembers':
+				var model$ = _elm_lang$core$Native_Utils.update(
+					model,
+					{isLoading: true});
+				return {
+					ctor: '_Tuple2',
+					_0: model$,
+					_1: _chrisbuttery$slackm8$Update$fetchAllMembers(model$.token)
+				};
+			case 'FetchMembersFail':
+				return A2(_chrisbuttery$slackm8$Update$handleHttpError, _p1._0, model);
+			case 'FetchMembersSucceed':
+				var _p3 = _p1._0;
+				var filtered = _chrisbuttery$slackm8$Helpers$filterMembers(_p3);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							isLoading: false,
+							limit: _elm_lang$core$List$length(_p3),
+							team: _elm_lang$core$Maybe$Just(filtered),
+							error: _elm_lang$core$Maybe$Nothing
+						}),
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_chrisbuttery$slackm8$Update$Split,
+						_chrisbuttery$slackm8$Shuffle$shuffle(filtered))
+				};
+			case 'InviteMemberFail':
+				return A2(_chrisbuttery$slackm8$Update$handleHttpError, _p1._0, model);
 			case 'InviteMembersToChannels':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8896,138 +8999,25 @@ var _chrisbuttery$slackm8$Update$update = F2(
 								return A4(_chrisbuttery$slackm8$Update$createChannel, i, model.token, model.title, grp);
 							}),
 						model.groups));
-			case 'CreateChannelSuccess':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
-					A2(
-						_elm_lang$core$List$map,
-						function (_p1) {
-							return A3(
-								_chrisbuttery$slackm8$Update$inviteMember,
-								_p0._1,
-								_p0._2,
-								function (_) {
-									return _.id;
-								}(_p1));
-						},
-						_p0._0));
-			case 'CreateChannelFail':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							error: true,
-							message: _elm_lang$core$Basics$toString(_p0._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'InviteMemberFail':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							error: true,
-							message: _elm_lang$core$Basics$toString(_p0._0)
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
 			case 'InviteMemberSuccess':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{error: false, message: '', success: true}),
+						{error: _elm_lang$core$Maybe$Nothing, success: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			case 'StoreToken':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{token: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'FetchMembers':
-				var model$ = _elm_lang$core$Native_Utils.update(
-					model,
-					{isLoading: true});
-				return {
-					ctor: '_Tuple2',
-					_0: model$,
-					_1: _chrisbuttery$slackm8$Update$fetchAllMembers(model$.token)
-				};
-			case 'FetchMembersSucceed':
-				var _p2 = _p0._0;
-				var filtered = _chrisbuttery$slackm8$Helpers$filterMembers(_p2);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							isLoading: false,
-							limit: _elm_lang$core$List$length(_p2),
-							team: _elm_lang$core$Maybe$Just(filtered),
-							error: false,
-							message: ''
-						}),
-					_1: A2(
-						_elm_lang$core$Random$generate,
-						_chrisbuttery$slackm8$Update$Split,
-						_chrisbuttery$slackm8$Shuffle$shuffle(filtered))
-				};
-			case 'FetchMembersFail':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							isLoading: false,
-							message: _elm_lang$core$Basics$toString(_p0._0),
-							error: true
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NoOp':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Split':
-				var model$ = _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						groups: A2(_chrisbuttery$slackm8$Split$split, model.limit, _p0._0)
-					});
-				return {
-					ctor: '_Tuple2',
-					_0: model$,
-					_1: _chrisbuttery$slackm8$Ports$modelChange(model$)
-				};
-			case 'Shuffle':
-				var _p3 = model.team;
-				if (_p3.ctor === 'Just') {
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: A2(
-							_elm_lang$core$Random$generate,
-							_chrisbuttery$slackm8$Update$Split,
-							_chrisbuttery$slackm8$Shuffle$shuffle(_p3._0))
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
 			case 'SetLimit':
 				var model$ = _elm_lang$core$Native_Utils.update(
 					model,
-					{limit: _p0._0});
+					{limit: _p1._0});
 				return {
 					ctor: '_Tuple2',
 					_0: model$,
 					_1: _chrisbuttery$slackm8$Ports$modelChange(model$)
 				};
 			case 'SetTitle':
-				var _p4 = _p0._0;
+				var _p4 = _p1._0;
 				var $default = _elm_lang$core$Native_Utils.eq(_p4, '') ? 'Room' : _p4;
 				var transformedTitle = _chrisbuttery$slackm8$Helpers$dasherize(
 					_elm_lang$core$String$toLower($default));
@@ -9039,21 +9029,42 @@ var _chrisbuttery$slackm8$Update$update = F2(
 					_0: model$,
 					_1: _chrisbuttery$slackm8$Ports$modelChange(model$)
 				};
+			case 'Shuffle':
+				var _p5 = model.team;
+				if (_p5.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: A2(
+							_elm_lang$core$Random$generate,
+							_chrisbuttery$slackm8$Update$Split,
+							_chrisbuttery$slackm8$Shuffle$shuffle(_p5._0))
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'Split':
+				var model$ = _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						groups: A2(_chrisbuttery$slackm8$Split$split, model.limit, _p1._0)
+					});
+				return {
+					ctor: '_Tuple2',
+					_0: model$,
+					_1: _chrisbuttery$slackm8$Ports$modelChange(model$)
+				};
 			default:
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{error: false, success: false, message: ''}),
+						{token: _p1._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
-var _chrisbuttery$slackm8$Update$Shuffle = {ctor: 'Shuffle'};
-var _chrisbuttery$slackm8$Update$SetLimit = function (a) {
-	return {ctor: 'SetLimit', _0: a};
-};
-var _chrisbuttery$slackm8$Update$NoOp = {ctor: 'NoOp'};
+var _chrisbuttery$slackm8$Update$Close = {ctor: 'Close'};
 
 var _chrisbuttery$slackm8$View$renderRefreshActions = function (team) {
 	return A2(
@@ -9160,6 +9171,7 @@ var _chrisbuttery$slackm8$View$renderChannelActions = F2(
 				]));
 	});
 var _chrisbuttery$slackm8$View$renderTokenForm = function (model) {
+	var error = A2(_elm_lang$core$Maybe$withDefault, '', model.error);
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -9187,12 +9199,12 @@ var _chrisbuttery$slackm8$View$renderTokenForm = function (model) {
 								{
 								ctor: '_Tuple2',
 								_0: 'hidden',
-								_1: _elm_lang$core$Native_Utils.eq(model.error, false)
+								_1: _elm_lang$core$Native_Utils.eq(error, '')
 							},
 								{
 								ctor: '_Tuple2',
 								_0: 'inline-block',
-								_1: _elm_lang$core$Native_Utils.eq(model.error, false)
+								_1: !_elm_lang$core$Native_Utils.eq(error, '')
 							}
 							]))
 					]),
@@ -9206,7 +9218,7 @@ var _chrisbuttery$slackm8$View$renderTokenForm = function (model) {
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text(model.message)
+								_elm_lang$html$Html$text(error)
 							])),
 						A2(
 						_elm_lang$html$Html$span,
@@ -9527,6 +9539,7 @@ var _chrisbuttery$slackm8$View$renderActions = function (model) {
 			]));
 };
 var _chrisbuttery$slackm8$View$renderMain = function (model) {
+	var error = A2(_elm_lang$core$Maybe$withDefault, '', model.error);
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -9545,7 +9558,7 @@ var _chrisbuttery$slackm8$View$renderMain = function (model) {
 								{
 								ctor: '_Tuple2',
 								_0: 'hidden',
-								_1: _elm_lang$core$Native_Utils.eq(model.error, false)
+								_1: _elm_lang$core$Native_Utils.eq(error, '')
 							}
 							]))
 					]),
@@ -9559,7 +9572,7 @@ var _chrisbuttery$slackm8$View$renderMain = function (model) {
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text(model.message)
+								_elm_lang$html$Html$text(error)
 							])),
 						A2(
 						_elm_lang$html$Html$span,
@@ -9705,7 +9718,15 @@ var _chrisbuttery$slackm8$Main$main = {
 				_elm_lang$core$Maybe$Just,
 				A2(
 					_elm_lang$core$Json_Decode$andThen,
-					A2(_elm_lang$core$Json_Decode_ops[':='], 'error', _elm_lang$core$Json_Decode$bool),
+					A2(
+						_elm_lang$core$Json_Decode_ops[':='],
+						'error',
+						_elm_lang$core$Json_Decode$oneOf(
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+									A2(_elm_lang$core$Json_Decode$map, _elm_lang$core$Maybe$Just, _elm_lang$core$Json_Decode$string)
+								]))),
 					function (error) {
 						return A2(
 							_elm_lang$core$Json_Decode$andThen,
@@ -9757,70 +9778,65 @@ var _chrisbuttery$slackm8$Main$main = {
 											function (limit) {
 												return A2(
 													_elm_lang$core$Json_Decode$andThen,
-													A2(_elm_lang$core$Json_Decode_ops[':='], 'message', _elm_lang$core$Json_Decode$string),
-													function (message) {
+													A2(_elm_lang$core$Json_Decode_ops[':='], 'success', _elm_lang$core$Json_Decode$bool),
+													function (success) {
 														return A2(
 															_elm_lang$core$Json_Decode$andThen,
-															A2(_elm_lang$core$Json_Decode_ops[':='], 'success', _elm_lang$core$Json_Decode$bool),
-															function (success) {
-																return A2(
-																	_elm_lang$core$Json_Decode$andThen,
-																	A2(
-																		_elm_lang$core$Json_Decode_ops[':='],
-																		'team',
-																		_elm_lang$core$Json_Decode$oneOf(
-																			_elm_lang$core$Native_List.fromArray(
-																				[
-																					_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
-																					A2(
-																					_elm_lang$core$Json_Decode$map,
-																					_elm_lang$core$Maybe$Just,
-																					_elm_lang$core$Json_Decode$list(
-																						A2(
+															A2(
+																_elm_lang$core$Json_Decode_ops[':='],
+																'team',
+																_elm_lang$core$Json_Decode$oneOf(
+																	_elm_lang$core$Native_List.fromArray(
+																		[
+																			_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+																			A2(
+																			_elm_lang$core$Json_Decode$map,
+																			_elm_lang$core$Maybe$Just,
+																			_elm_lang$core$Json_Decode$list(
+																				A2(
+																					_elm_lang$core$Json_Decode$andThen,
+																					A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_lrg', _elm_lang$core$Json_Decode$string),
+																					function (avatar_lrg) {
+																						return A2(
 																							_elm_lang$core$Json_Decode$andThen,
-																							A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_lrg', _elm_lang$core$Json_Decode$string),
-																							function (avatar_lrg) {
+																							A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_sml', _elm_lang$core$Json_Decode$string),
+																							function (avatar_sml) {
 																								return A2(
 																									_elm_lang$core$Json_Decode$andThen,
-																									A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_sml', _elm_lang$core$Json_Decode$string),
-																									function (avatar_sml) {
+																									A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$string),
+																									function (id) {
 																										return A2(
 																											_elm_lang$core$Json_Decode$andThen,
-																											A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$string),
-																											function (id) {
+																											A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
+																											function (name) {
 																												return A2(
 																													_elm_lang$core$Json_Decode$andThen,
-																													A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
-																													function (name) {
+																													A2(_elm_lang$core$Json_Decode_ops[':='], 'real_name', _elm_lang$core$Json_Decode$string),
+																													function (real_name) {
 																														return A2(
 																															_elm_lang$core$Json_Decode$andThen,
-																															A2(_elm_lang$core$Json_Decode_ops[':='], 'real_name', _elm_lang$core$Json_Decode$string),
-																															function (real_name) {
-																																return A2(
-																																	_elm_lang$core$Json_Decode$andThen,
-																																	A2(_elm_lang$core$Json_Decode_ops[':='], 'team_id', _elm_lang$core$Json_Decode$string),
-																																	function (team_id) {
-																																		return _elm_lang$core$Json_Decode$succeed(
-																																			{avatar_lrg: avatar_lrg, avatar_sml: avatar_sml, id: id, name: name, real_name: real_name, team_id: team_id});
-																																	});
+																															A2(_elm_lang$core$Json_Decode_ops[':='], 'team_id', _elm_lang$core$Json_Decode$string),
+																															function (team_id) {
+																																return _elm_lang$core$Json_Decode$succeed(
+																																	{avatar_lrg: avatar_lrg, avatar_sml: avatar_sml, id: id, name: name, real_name: real_name, team_id: team_id});
 																															});
 																													});
 																											});
 																									});
-																							})))
-																				]))),
-																	function (team) {
+																							});
+																					})))
+																		]))),
+															function (team) {
+																return A2(
+																	_elm_lang$core$Json_Decode$andThen,
+																	A2(_elm_lang$core$Json_Decode_ops[':='], 'title', _elm_lang$core$Json_Decode$string),
+																	function (title) {
 																		return A2(
 																			_elm_lang$core$Json_Decode$andThen,
-																			A2(_elm_lang$core$Json_Decode_ops[':='], 'title', _elm_lang$core$Json_Decode$string),
-																			function (title) {
-																				return A2(
-																					_elm_lang$core$Json_Decode$andThen,
-																					A2(_elm_lang$core$Json_Decode_ops[':='], 'token', _elm_lang$core$Json_Decode$string),
-																					function (token) {
-																						return _elm_lang$core$Json_Decode$succeed(
-																							{error: error, groups: groups, isLoading: isLoading, limit: limit, message: message, success: success, team: team, title: title, token: token});
-																					});
+																			A2(_elm_lang$core$Json_Decode_ops[':='], 'token', _elm_lang$core$Json_Decode$string),
+																			function (token) {
+																				return _elm_lang$core$Json_Decode$succeed(
+																					{error: error, groups: groups, isLoading: isLoading, limit: limit, success: success, team: team, title: title, token: token});
 																			});
 																	});
 															});

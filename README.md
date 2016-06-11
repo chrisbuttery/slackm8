@@ -96,11 +96,11 @@ Source files located in `/src`
 
 ## Todo
 
-- [ ] On select event, get selected option value and not selectedIndex
-- [ ] Add nicer styling to everything because I've literally done the bare minimum for this demo
-- [ ] Add nicer UI interactions
-- [ ] decode error response
-- [ ] style loading state on team refresh
+- On select event, get selected option value and not selectedIndex
+- Add nicer styling to everything because I've literally done the bare minimum for this demo
+- Add nicer UI interactions
+- ~~decode error response~~
+- style loading state on team refresh
 
 ## Acknowledgements
 

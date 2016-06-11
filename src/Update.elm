@@ -5,7 +5,6 @@ import String
 import Http
 import Json.Decode as Json exposing ((:=))
 import Task
-
 import Model exposing (Member, Model)
 import Shuffle exposing (shuffle)
 import Split exposing (split)
@@ -14,21 +13,20 @@ import Ports
 
 
 type Msg
-  = NoOp
-  | SetLimit Int
-  | Shuffle
-  | Split (List Member)
-  | SetTitle String
-  | FetchMembers
-  | FetchMembersSucceed (List Member)
-  | FetchMembersFail Http.Error
-  | StoreToken String
-  | InviteMembersToChannels
+  = Close
   | CreateChannelFail Http.Error
   | CreateChannelSuccess (List Member) String String
+  | FetchMembers
+  | FetchMembersFail Http.Error
+  | FetchMembersSucceed (List Member)
   | InviteMemberFail Http.Error
+  | InviteMembersToChannels
   | InviteMemberSuccess Bool
-  | Close
+  | SetLimit Int
+  | SetTitle String
+  | Shuffle
+  | Split (List Member)
+  | StoreToken String
 
 
 -- update
@@ -36,107 +34,139 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
+    Close ->
+      ( { model
+          | error = Nothing
+          , success = False
+        }
+      , Cmd.none
+      )
 
-    InviteMembersToChannels ->
-      model ! List.indexedMap (\i grp -> createChannel i model.token model.title grp) model.groups
+    CreateChannelFail err ->
+      handleHttpError err model
 
     CreateChannelSuccess group token roomID ->
       model ! List.map (inviteMember token roomID << .id) group
-
-    CreateChannelFail err ->
-      ({ model
-        | error = True
-        , message = toString err
-        }, Cmd.none)
-
-    InviteMemberFail err ->
-      ({ model
-        | error = True
-        , message = toString err
-        }, Cmd.none)
-
-    InviteMemberSuccess bool ->
-      ({ model
-        | error = False
-        , message = ""
-        , success = True
-        }, Cmd.none)
-
-    StoreToken token ->
-      ({ model | token = token }, Cmd.none)
 
     FetchMembers ->
       let
         model' =
           { model | isLoading = True }
       in
-        (model', fetchAllMembers model'.token)
+        ( model', fetchAllMembers model'.token )
+
+    FetchMembersFail err ->
+      handleHttpError err model
 
     FetchMembersSucceed result ->
       let
         filtered =
           filterMembers result
       in
-        ({ model
-          | isLoading = False
-          , limit = List.length result
-          , team = Just filtered
-          , error = False
-          , message = ""
-          }, Random.generate Split (shuffle filtered))
+        ( { model
+            | isLoading = False
+            , limit = List.length result
+            , team = Just filtered
+            , error = Nothing
+          }
+        , Random.generate Split (shuffle filtered)
+        )
 
-    FetchMembersFail err ->
-      ({ model
-        | isLoading = False
-        , message = toString err
-        , error = True }, Cmd.none)
+    InviteMemberFail err ->
+      handleHttpError err model
 
-    NoOp ->
-      (model, Cmd.none)
+    InviteMembersToChannels ->
+      model ! List.indexedMap (\i grp -> createChannel i model.token model.title grp) model.groups
+
+    InviteMemberSuccess bool ->
+      ( { model
+          | error = Nothing
+          , success = True
+        }
+      , Cmd.none
+      )
+
+    SetLimit num ->
+      let
+        model' =
+          { model | limit = num }
+      in
+        ( model', Ports.modelChange model' )
+
+    SetTitle title ->
+      let
+        default =
+          if title == "" then
+            "Room"
+          else
+            title
+
+        transformedTitle =
+          default
+            |> String.toLower
+            |> dasherize
+
+        model' =
+          { model | title = transformedTitle }
+      in
+        ( model', Ports.modelChange model' )
+
+    Shuffle ->
+      case model.team of
+        Just team ->
+          ( model, Random.generate Split (shuffle team) )
+
+        Nothing ->
+          ( model, Cmd.none )
 
     Split list ->
       let
         model' =
           { model | groups = (split model.limit list) }
       in
-        (model', Ports.modelChange model')
+        ( model', Ports.modelChange model' )
 
-    Shuffle ->
-      case model.team of
-        Just team ->
-          (model, Random.generate Split (shuffle team))
-        Nothing ->
-          (model, Cmd.none)
+    StoreToken token ->
+      ( { model | token = token }, Cmd.none )
 
-    SetLimit num ->
-      let
-        model' =
-          { model | limit = num}
-      in
-        (model', Ports.modelChange model')
 
-    SetTitle title ->
-      let
-        default =
-          if title == ""
-          then "Room"
-          else title
+-- handleHttpError
+-- Handle a http error
 
-        transformedTitle =
-          default
-          |> String.toLower
-          |> dasherize
+handleHttpError : Http.Error -> Model -> ( Model, Cmd Msg )
+handleHttpError err model =
+  case err of
+    Http.Timeout ->
+      ( { model
+          | error = Just "Timeout"
+          , isLoading = False
+        }
+      , Cmd.none
+      )
 
-        model' =
-          { model | title = transformedTitle }
-      in
-        (model', Ports.modelChange model')
+    Http.NetworkError ->
+      ( { model
+          | error = Just "Network Error"
+          , isLoading = False
+        }
+      , Cmd.none
+      )
 
-    Close ->
-      ({ model
-        | error = False
-        , success = False
-        , message = "" }, Cmd.none)
+    Http.UnexpectedPayload error ->
+      ( { model
+          | error = Just error
+          , isLoading = False
+        }
+      , Cmd.none
+      )
+
+    Http.BadResponse code error ->
+      ( { model
+          | error = Just error
+          , isLoading = False
+        }
+      , Cmd.none
+      )
 
 
 -- fetchAllMembers
@@ -148,8 +178,7 @@ fetchAllMembers token =
   Task.perform
     FetchMembersFail
     FetchMembersSucceed
-    (Http.get
-      decodeMembersResponse
+    (Http.get decodeMembersResponse
       ("https://slack.com/api/users.list?token=" ++ token)
     )
 
@@ -158,13 +187,14 @@ fetchAllMembers token =
 -- pluck out the members array from the fetchAllMembers response
 -- and iterate required data using decodeMembers
 
-decodeMembersResponse: Json.Decoder (List Member)
+decodeMembersResponse : Json.Decoder (List Member)
 decodeMembersResponse =
-  Json.at ["members"] (Json.list decodeMembers)
+  Json.at [ "members" ] (Json.list decodeMembers)
 
 
 -- decodeMembers
 -- pluck out the id, team_id, name and real_name for each member
+
 
 decodeMembers : Json.Decoder Member
 decodeMembers =
@@ -182,7 +212,7 @@ decodeMembers =
 
 decodeLrgAvatar : Json.Decoder String
 decodeLrgAvatar =
-  Json.at ["image_32"] Json.string
+  Json.at [ "image_32" ] Json.string
 
 
 -- decodeSmlAvatar
@@ -190,7 +220,7 @@ decodeLrgAvatar =
 
 decodeSmlAvatar : Json.Decoder String
 decodeSmlAvatar =
-  Json.at ["image_24"] Json.string
+  Json.at [ "image_24" ] Json.string
 
 
 -- createChannel
@@ -203,11 +233,16 @@ createChannel idx token title group =
   Task.perform
     CreateChannelFail
     (CreateChannelSuccess group token)
-    (Http.post
-      decodeCreateChannelResponse
-      ("https://slack.com/api/channels.create?token=" ++ token ++ "&name=" ++ title ++ "-" ++ toString(idx + 1))
+    (Http.post decodeCreateChannelResponse
+      ("https://slack.com/api/channels.create?token="
+      ++ token
+      ++ "&name="
+      ++ title
+      ++ "-"
+      ++ toString (idx + 1))
       Http.empty
     )
+
 
 
 -- decodeCreateChannelResponse
@@ -215,7 +250,7 @@ createChannel idx token title group =
 
 decodeCreateChannelResponse : Json.Decoder String
 decodeCreateChannelResponse =
-  Json.at ["channel", "id"] Json.string
+  Json.at [ "channel", "id" ] Json.string
 
 
 -- inviteMember
@@ -227,9 +262,14 @@ inviteMember token channel_id user_id =
   Task.perform
     InviteMemberFail
     InviteMemberSuccess
-    (Http.post
-      decodeInviteMemberResponse
-      ("https://slack.com/api/channels.invite?token=" ++ token ++ "&channel=" ++ channel_id ++ "&user=" ++ user_id)
+    (Http.post decodeInviteMemberResponse
+      ("https://slack.com/api/channels.invite?token="
+        ++ token
+        ++ "&channel="
+        ++ channel_id
+        ++ "&user="
+        ++ user_id
+      )
       Http.empty
     )
 
@@ -239,8 +279,4 @@ inviteMember token channel_id user_id =
 
 decodeInviteMemberResponse : Json.Decoder Bool
 decodeInviteMemberResponse =
-  Json.at ["ok"] Json.bool
-
-
-decodeError =
-  Json.at ["error"] Json.string
+  Json.at [ "ok" ] Json.bool
