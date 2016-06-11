@@ -72,16 +72,17 @@ update msg model =
 
 #### Splitting a list into a list of multiple lists
 
-I won't lie. This continues to blow my mind.  
-Here's very basic example of the output I wanted.
+I won't lie. This continues to blow my mind.
+I wanted to split a list into lists of specific amount of values.  
+So for example, split a list into groups of 2.  
 
 ```
+limit = 2
 myList = [1,2,3,4,5]
 
 // desired output [[1,2], [2,3], [5]]
 ```
 
-Ideally I wanted to specify how many lists `myList` would could be broken up into.  
 [I've commented on how I understand this function to work](https://github.com/chrisbuttery/slackm8/blob/master/src/Split.elm). I could have got it awfully wrong, so I'm happy for anyone to correct me.
 
 
