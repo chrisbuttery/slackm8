@@ -3,7 +3,9 @@
 _slackm8_ will randomly shuffle a team into a specific amount of groups & invite members to Slack channels.  
 Written in [elm-lang](http://elm-lang.org/).
 
-####[video demo](https://cloudup.com/ceqHFQ7HUJN)
+#### [video demo](https://cloudup.com/ceqHFQ7HUJN)
+
+#### [Try it yourself](http://chrisbuttery.github.io/slackm8/dist/index.html)
 
 ![alt tag](https://github.com/chrisbuttery/slackm8/blob/master/slackm8.png)
 
@@ -21,7 +23,7 @@ My workplace likes to set up random groups of members for quick chats to promote
 
 ## Slack API authorization test token
 
-To try this example out you'll need to be the administrator of your Slack team & create an API authorization test token here. https://api.slack.com/web.
+To try this example out you'll need to have the administrator of your Slack team create an API authorization test token here. [https://api.slack.com/web](https://api.slack.com/web).
 
 This will allow _slackm8_ to make 3 types of http requests to your slack team.
 
