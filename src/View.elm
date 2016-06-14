@@ -96,7 +96,10 @@ renderTokenForm model =
       Maybe.withDefault "" model.error
   in
     div [ class "actions--token" ] [
-      p [] [ text "Enter your Slack API authorization test token"]
+      p [] [ text "Enter your Slack API authorization test token." ]
+      , p [] [
+        a [ href "https://api.slack.com/web" ] [ text "You can get one here."]
+      ]
       , div [ classList [( "error", True), ("hidden", error == ""), ("inline-block", error /= "")]] [
         p [ class "message" ] [ text error ]
         , span [ class "close", onClick Close ] [ text "close"]

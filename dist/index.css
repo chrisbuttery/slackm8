@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+a {
+  color: #60b5cc;
+}
+
 body {
   background: #fff;
   color: #757575;
