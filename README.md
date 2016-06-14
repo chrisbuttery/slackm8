@@ -3,9 +3,7 @@
 _slackm8_ will randomly shuffle a team into a specific amount of groups & invite members to Slack channels.  
 Written in [elm-lang](http://elm-lang.org/).
 
-#### [video demo](https://cloudup.com/ceqHFQ7HUJN)
-
-#### [Try it yourself](http://chrisbuttery.github.io/slackm8/dist/index.html)
+[Try it yourself](http://chrisbuttery.github.io/slackm8/dist/index.html) or watch the [video demo](https://cloudup.com/ceqHFQ7HUJN).
 
 ![alt tag](https://github.com/chrisbuttery/slackm8/blob/master/slackm8.png)
 
