@@ -9671,6 +9671,20 @@ var _chrisbuttery$slackm8$View$renderMain = function (model) {
 					model.groups))
 			]));
 };
+var _chrisbuttery$slackm8$View$nothing = A2(
+	_elm_lang$html$Html$div,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Native_List.fromArray(
+		[]));
+var _chrisbuttery$slackm8$View$hasTeam = function (model) {
+	var _p0 = model.team;
+	if (_p0.ctor === 'Nothing') {
+		return _chrisbuttery$slackm8$View$nothing;
+	} else {
+		return A2(_chrisbuttery$slackm8$View$renderTeam, _p0._0, model.isLoading);
+	}
+};
 var _chrisbuttery$slackm8$View$view = function (model) {
 	var team = A2(
 		_elm_lang$core$Maybe$withDefault,
@@ -9701,7 +9715,7 @@ var _chrisbuttery$slackm8$View$view = function (model) {
 					[
 						_chrisbuttery$slackm8$View$renderHeader,
 						_chrisbuttery$slackm8$View$renderDescription,
-						A2(_chrisbuttery$slackm8$View$renderTeam, team, model.isLoading),
+						_chrisbuttery$slackm8$View$hasTeam(model),
 						_chrisbuttery$slackm8$View$renderRefreshActions(team)
 					])),
 				A2(

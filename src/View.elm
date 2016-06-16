@@ -13,6 +13,14 @@ import Split exposing (split)
 import Update exposing (Msg(..))
 
 
+-- nothing
+-- empty element
+
+nothing : Html Msg
+nothing =
+  div [] []
+
+
 -- optionValues
 -- define a list of ints from 0 to `max`
 
@@ -42,6 +50,15 @@ renderTeam team isLoading =
     , renderLoading isLoading
   ]
 
+
+hasTeam : Model -> Html Msg
+hasTeam model =
+  case model.team of
+    Nothing ->
+      nothing
+
+    Just team ->
+      renderTeam team model.isLoading
 
 -- renderTeamMember
 -- render a team member with a sml avatar
@@ -240,7 +257,7 @@ view model =
       div [ classNames ["column",  "u-p-lrg"] ] [
         renderHeader
         , renderDescription
-        , renderTeam team model.isLoading
+        , hasTeam model
         , renderRefreshActions team
       ]
       , div [ class "main" ] [
