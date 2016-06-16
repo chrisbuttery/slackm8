@@ -8044,17 +8044,7 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
-var _chrisbuttery$slackm8$Model$model = {
-	error: _elm_lang$core$Maybe$Nothing,
-	groups: _elm_lang$core$Native_List.fromArray(
-		[]),
-	isLoading: false,
-	limit: 1,
-	success: false,
-	team: _elm_lang$core$Maybe$Nothing,
-	title: 'Room',
-	token: ''
-};
+var _chrisbuttery$slackm8$Model$model = {error: _elm_lang$core$Maybe$Nothing, groups: _elm_lang$core$Maybe$Nothing, isLoading: false, limit: 1, success: false, team: _elm_lang$core$Maybe$Nothing, title: 'Room', token: ''};
 var _chrisbuttery$slackm8$Model$Member = F6(
 	function (a, b, c, d, e, f) {
 		return {id: a, team_id: b, name: c, real_name: d, avatar_sml: e, avatar_lrg: f};
@@ -8117,12 +8107,18 @@ var _chrisbuttery$slackm8$Helpers$createGroups = F2(
 			list);
 	});
 var _chrisbuttery$slackm8$Helpers$filterMembers = function (team) {
-	return A2(
-		_elm_lang$core$List$filter,
-		function (member) {
-			return (!_elm_lang$core$Native_Utils.eq(member.name, 'slackbot')) && (!_elm_lang$core$Native_Utils.eq(member.name, 'teambl'));
-		},
-		team);
+	var _p1 = team;
+	if (_p1.ctor === 'Nothing') {
+		return _elm_lang$core$Native_List.fromArray(
+			[]);
+	} else {
+		return A2(
+			_elm_lang$core$List$filter,
+			function (member) {
+				return (!_elm_lang$core$Native_Utils.eq(member.name, 'slackbot')) && (!_elm_lang$core$Native_Utils.eq(member.name, 'teambl'));
+			},
+			_p1._0);
+	}
 };
 
 var _elm_lang$html$Html_App$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
@@ -8720,7 +8716,7 @@ var _chrisbuttery$slackm8$Ports$modelChange = _elm_lang$core$Native_Platform.out
 	function (v) {
 		return {
 			error: (v.error.ctor === 'Nothing') ? null : v.error._0,
-			groups: _elm_lang$core$Native_List.toArray(v.groups).map(
+			groups: (v.groups.ctor === 'Nothing') ? null : _elm_lang$core$Native_List.toArray(v.groups._0).map(
 				function (v) {
 					return _elm_lang$core$Native_List.toArray(v).map(
 						function (v) {
@@ -8777,11 +8773,12 @@ var _chrisbuttery$slackm8$Update$decodeMembers = A7(
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'real_name', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'profile', _chrisbuttery$slackm8$Update$decodeSmlAvatar),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'profile', _chrisbuttery$slackm8$Update$decodeLrgAvatar));
-var _chrisbuttery$slackm8$Update$decodeMembersResponse = A2(
-	_elm_lang$core$Json_Decode$at,
-	_elm_lang$core$Native_List.fromArray(
-		['members']),
-	_elm_lang$core$Json_Decode$list(_chrisbuttery$slackm8$Update$decodeMembers));
+var _chrisbuttery$slackm8$Update$decodeMembersResponse = _elm_lang$core$Json_Decode$maybe(
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		_elm_lang$core$Native_List.fromArray(
+			['members']),
+		_elm_lang$core$Json_Decode$list(_chrisbuttery$slackm8$Update$decodeMembers)));
 var _chrisbuttery$slackm8$Update$handleHttpError = F2(
 	function (err, model) {
 		var _p0 = err;
@@ -8977,7 +8974,12 @@ var _chrisbuttery$slackm8$Update$update = F2(
 						model,
 						{
 							isLoading: false,
-							limit: _elm_lang$core$List$length(_p3),
+							limit: _elm_lang$core$List$length(
+								A2(
+									_elm_lang$core$Maybe$withDefault,
+									_elm_lang$core$Native_List.fromArray(
+										[]),
+									_p3)),
 							team: _elm_lang$core$Maybe$Just(filtered),
 							error: _elm_lang$core$Maybe$Nothing
 						}),
@@ -8998,7 +9000,11 @@ var _chrisbuttery$slackm8$Update$update = F2(
 							function (i, grp) {
 								return A4(_chrisbuttery$slackm8$Update$createChannel, i, model.token, model.title, grp);
 							}),
-						model.groups));
+						A2(
+							_elm_lang$core$Maybe$withDefault,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							model.groups)));
 			case 'InviteMemberSuccess':
 				return {
 					ctor: '_Tuple2',
@@ -9047,7 +9053,8 @@ var _chrisbuttery$slackm8$Update$update = F2(
 				var model$ = _elm_lang$core$Native_Utils.update(
 					model,
 					{
-						groups: A2(_chrisbuttery$slackm8$Split$split, model.limit, _p1._0)
+						groups: _elm_lang$core$Maybe$Just(
+							A2(_chrisbuttery$slackm8$Split$split, model.limit, _p1._0))
 					});
 				return {
 					ctor: '_Tuple2',
@@ -9466,7 +9473,14 @@ var _chrisbuttery$slackm8$View$renderActions = function (model) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_chrisbuttery$slackm8$View$renderChannelActions, model.groups, model.limit)
+						A2(
+						_chrisbuttery$slackm8$View$renderChannelActions,
+						A2(
+							_elm_lang$core$Maybe$withDefault,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							model.groups),
+						model.limit)
 					])),
 				A2(
 				_elm_lang$html$Html$div,
@@ -9647,7 +9661,14 @@ var _chrisbuttery$slackm8$View$renderMain = function (model) {
 								_elm_lang$html$Html$text('close')
 							]))
 					])),
-				A2(_chrisbuttery$slackm8$View$renderGroups, model.title, model.groups)
+				A2(
+				_chrisbuttery$slackm8$View$renderGroups,
+				model.title,
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					model.groups))
 			]));
 };
 var _chrisbuttery$slackm8$View$view = function (model) {
@@ -9750,40 +9771,48 @@ var _chrisbuttery$slackm8$Main$main = {
 							A2(
 								_elm_lang$core$Json_Decode_ops[':='],
 								'groups',
-								_elm_lang$core$Json_Decode$list(
-									_elm_lang$core$Json_Decode$list(
-										A2(
-											_elm_lang$core$Json_Decode$andThen,
-											A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_lrg', _elm_lang$core$Json_Decode$string),
-											function (avatar_lrg) {
-												return A2(
-													_elm_lang$core$Json_Decode$andThen,
-													A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_sml', _elm_lang$core$Json_Decode$string),
-													function (avatar_sml) {
-														return A2(
-															_elm_lang$core$Json_Decode$andThen,
-															A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$string),
-															function (id) {
-																return A2(
-																	_elm_lang$core$Json_Decode$andThen,
-																	A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
-																	function (name) {
-																		return A2(
-																			_elm_lang$core$Json_Decode$andThen,
-																			A2(_elm_lang$core$Json_Decode_ops[':='], 'real_name', _elm_lang$core$Json_Decode$string),
-																			function (real_name) {
-																				return A2(
-																					_elm_lang$core$Json_Decode$andThen,
-																					A2(_elm_lang$core$Json_Decode_ops[':='], 'team_id', _elm_lang$core$Json_Decode$string),
-																					function (team_id) {
-																						return _elm_lang$core$Json_Decode$succeed(
-																							{avatar_lrg: avatar_lrg, avatar_sml: avatar_sml, id: id, name: name, real_name: real_name, team_id: team_id});
-																					});
-																			});
-																	});
-															});
-													});
-											})))),
+								_elm_lang$core$Json_Decode$oneOf(
+									_elm_lang$core$Native_List.fromArray(
+										[
+											_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+											A2(
+											_elm_lang$core$Json_Decode$map,
+											_elm_lang$core$Maybe$Just,
+											_elm_lang$core$Json_Decode$list(
+												_elm_lang$core$Json_Decode$list(
+													A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_lrg', _elm_lang$core$Json_Decode$string),
+														function (avatar_lrg) {
+															return A2(
+																_elm_lang$core$Json_Decode$andThen,
+																A2(_elm_lang$core$Json_Decode_ops[':='], 'avatar_sml', _elm_lang$core$Json_Decode$string),
+																function (avatar_sml) {
+																	return A2(
+																		_elm_lang$core$Json_Decode$andThen,
+																		A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$string),
+																		function (id) {
+																			return A2(
+																				_elm_lang$core$Json_Decode$andThen,
+																				A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string),
+																				function (name) {
+																					return A2(
+																						_elm_lang$core$Json_Decode$andThen,
+																						A2(_elm_lang$core$Json_Decode_ops[':='], 'real_name', _elm_lang$core$Json_Decode$string),
+																						function (real_name) {
+																							return A2(
+																								_elm_lang$core$Json_Decode$andThen,
+																								A2(_elm_lang$core$Json_Decode_ops[':='], 'team_id', _elm_lang$core$Json_Decode$string),
+																								function (team_id) {
+																									return _elm_lang$core$Json_Decode$succeed(
+																										{avatar_lrg: avatar_lrg, avatar_sml: avatar_sml, id: id, name: name, real_name: real_name, team_id: team_id});
+																								});
+																						});
+																				});
+																		});
+																});
+														}))))
+										]))),
 							function (groups) {
 								return A2(
 									_elm_lang$core$Json_Decode$andThen,

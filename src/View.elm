@@ -129,7 +129,7 @@ renderActions model =
     div
       [ class "actions--main" ] [
         div [ class "actions--invite" ] [
-          renderChannelActions model.groups model.limit
+          renderChannelActions (Maybe.withDefault [] model.groups) model.limit
         ]
         , div [ class "actions--shuffle" ] [
           input [ class "inline-block", type' "text", placeholder "Type room name", onInput SetTitle ] []
@@ -196,7 +196,7 @@ renderMain model =
         p [ class "message" ] [ text "Channels have been created and members have successfully been invited!"]
         , span [ class "close", onClick Close ] [ text "close"]
       ]
-      , renderGroups model.title model.groups
+      , renderGroups model.title (Maybe.withDefault [] model.groups)
     ]
 
 
