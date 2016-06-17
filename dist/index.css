@@ -37,6 +37,7 @@ body {
   box-shadow: inset -1px 0 #e0e0e0;
   left: 0;
   min-width: 150px;
+  padding: 20px;
   position: absolute;
   top: 0;
   width: 300px;
@@ -47,32 +48,7 @@ body {
   overflow: hidden;
 }
 
-
 /* utilities */
-
-.u-p-lrg {
-  padding: 20px;
-}
-
-.u-mr-lrg {
-  margin-right: 20px;
-}
-
-.u-mr-med {
-  margin-right: 10px;
-}
-
-.u-mr-sml {
-  margin-right: 5px;
-}
-
-.u-mt-med {
-  margin-top: 10px;
-}
-
-.u-mt-sml {
-  margin-top: 5px;
-}
 
 .hidden {
   display: none !important;
@@ -99,6 +75,7 @@ body {
   font-size: 20px;
   font-weight: normal;
   line-height: 40px;
+  margin-right: 20px;
   vertical-align: middle;
 }
 
@@ -145,6 +122,7 @@ body {
 .profile {
   border-radius: 50%;
   height: 32px;
+  margin-right: 5px;
   vertical-align: middle;
   width: 32px;
 }
