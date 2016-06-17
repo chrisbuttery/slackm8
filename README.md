@@ -102,7 +102,7 @@ Source files located in `/src`
 - Add nicer UI interactions
 - ~~decode error response~~
 - ~~convert 'group' to Maybe~~
-- style loading state on team refresh
+- ~~style loading state on team refresh~~
 
 ## Acknowledgements
 

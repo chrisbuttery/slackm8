@@ -11,7 +11,7 @@ import Helpers exposing (createGroups, targetSelectedIndex, classNames)
 import Model exposing (Member, Group, Model)
 import Split exposing (split)
 import Update exposing (Msg(..))
-
+import Loader
 
 -- nothing
 -- empty element
@@ -47,7 +47,7 @@ renderTeam team isLoading =
   div [ class "team" ] [
     h3 [ class "team__title" ] [ text "Team" ]
     , div [ class "team__members" ] (List.map (\member -> renderTeamMember member) team)
-    , renderLoading isLoading
+    , renderLoadingState isLoading
   ]
 
 
@@ -184,14 +184,17 @@ renderChannelActions groups limit =
     ]
 
 
--- renderLoading
+-- renderLoadingState
 -- rendering a loading state
 
-renderLoading : Bool -> Html Msg
-renderLoading isLoading =
-  div [ classList [("is-loading", True), ("hidden", isLoading == False)] ] [
-    text "is loading"
-  ]
+renderLoadingState : Bool -> Html Msg
+renderLoadingState isLoading =
+  div [
+    classList [
+      ("is-loading", True)
+      , ("hidden", isLoading == False)
+    ]
+  ][ Loader.render ]
 
 
 -- renderMain
