@@ -95,15 +95,6 @@ Source files located in `/src`
 % npm run build
 ```
 
-## Todo
-
-- On select event, get selected option value and not selectedIndex
-- Add nicer styling to everything because I've literally done the bare minimum for this demo
-- Add nicer UI interactions
-- ~~decode error response~~
-- ~~convert 'group' to Maybe~~
-- ~~style loading state on team refresh~~
-
 ## Acknowledgements
 
 A great lot of thanks goes to [Rob Hoelz](https://github.com/hoelzro) and [Chad Gilbert](https://github.com/freakingawesome) for their wealth of Elm knowledge.

@@ -39,26 +39,33 @@ renderDescription =
   ]
 
 
--- renderTeam
+-- renderTeamList
 -- render a teams list of members
 
-renderTeam : List Member -> Bool -> Html Msg
-renderTeam team isLoading =
+renderTeamList : List Member -> Bool -> Html Msg
+renderTeamList team isLoading =
   div [ class "team" ] [
-    h3 [ class "team__title" ] [ text "Team" ]
-    , div [ class "team__members" ] (List.map (\member -> renderTeamMember member) team)
+    h3
+      [ class "team__title" ]
+      [ text "Team" ]
+    , div
+      [ class "team__members" ]
+      (List.map (\member -> renderTeamMember member) team)
     , renderLoadingState isLoading
   ]
 
+-- renderTeam
+-- If a team exists, call renderTeam
 
-hasTeam : Model -> Html Msg
-hasTeam model =
+renderTeam : Model -> Html Msg
+renderTeam model =
   case model.team of
     Nothing ->
       nothing
 
     Just team ->
-      renderTeam team model.isLoading
+      renderTeamList team model.isLoading
+
 
 -- renderTeamMember
 -- render a team member with a sml avatar
@@ -66,8 +73,12 @@ hasTeam model =
 renderTeamMember : Member -> Html Msg
 renderTeamMember member =
   div [ class "member" ] [
-    img [ classNames ["profile", "profile--sml", "u-mr-sml"], src member.avatar_sml ] []
-    , span [ class "username" ] [ text ("@" ++ member.name) ]
+    img
+      [ classNames ["profile", "profile--sml", "u-mr-sml"]
+      , src member.avatar_sml ] []
+    , span
+      [ class "username" ]
+      [ text ("@" ++ member.name) ]
   ]
 
 
@@ -87,8 +98,12 @@ renderGroups title groups =
 renderGroup : Group -> Html Msg
 renderGroup obj =
   div [ class "group"] [
-    h2 [ classNames ["group__title", "u-mr-lrg"] ] [ text obj.title ]
-    , div [ class "group__members" ] ( List.map renderGroupMember obj.group )
+    h2
+      [ classNames ["group__title", "u-mr-lrg"] ]
+      [ text obj.title ]
+    , div
+      [ class "group__members" ]
+      ( List.map renderGroupMember obj.group )
   ]
 
 
@@ -97,9 +112,14 @@ renderGroup obj =
 
 renderGroupMember : Member -> Html Msg
 renderGroupMember member =
-  div [ class "member" ] [
-    img [ classNames ["profile", "u-mr-sml"], src member.avatar_lrg ] []
-    , span [ class "username" ] [ text ("@" ++ member.name) ]
+  div
+    [ class "member" ] [
+    img
+      [ classNames ["profile", "u-mr-sml"]
+      , src member.avatar_lrg ] []
+    , span
+      [ class "username" ]
+      [ text ("@" ++ member.name) ]
   ]
 
 
@@ -115,18 +135,27 @@ renderTokenForm model =
     div [ class "actions--token" ] [
       p [] [ text "Enter your Slack API authorization test token." ]
       , p [] [
-        a [ href "https://api.slack.com/web" ] [ text "You can get one here."]
+        a
+          [ href "https://api.slack.com/web" ]
+          [ text "You can get one here."]
       ]
-      , div [ classList [( "error", True), ("hidden", error == ""), ("inline-block", error /= "")]] [
-        p [ class "message" ] [ text error ]
-        , span [ class "close", onClick Close ] [ text "close"]
-      ]
+      , div
+        [ classList [
+          ( "error", True)
+          , ("hidden", error == "")
+          , ("inline-block", error /= "")]
+        ] [
+          p [ class "message" ] [ text error ]
+          , span [ class "close", onClick Close ] [ text "close"]
+        ]
       , div [] [
         input [
           placeholder "xoxp-123456...",
           onInput StoreToken
         ] []
-        , button [ classNames ["btn"], onClick FetchMembers ] [ text "Fetch Team" ]
+        , button
+          [ classNames ["btn"], onClick FetchMembers ]
+          [ text "Fetch Team" ]
       ]
     ]
 
@@ -149,19 +178,32 @@ renderActions model =
           renderChannelActions (Maybe.withDefault [] model.groups) model.limit
         ]
         , div [ class "actions--shuffle" ] [
-          input [ class "inline-block", type' "text", placeholder "Type room name", onInput SetTitle ] []
-          , div [ class "select-group" ] [
-            label [ class "select-group__label"] [ text "Groups of" ]
-            , select [ class "select-group__select", selectEvent ]
+          input
+            [ class "inline-block"
+            , type' "text"
+            , placeholder "Type room name"
+            , onInput SetTitle ] []
+          , div
+            [ class "select-group" ] [
+            label
+              [ class "select-group__label"]
+              [ text "Groups of" ]
+            , select
+              [ class "select-group__select"
+              , selectEvent
+              ]
               (List.map (\val ->
-                option [ selected (model.limit == val), value (toString val) ] [
-                  text (toString val)
-                ]
+                option
+                  [ selected (model.limit == val)
+                  , value (toString val)
+                  ] [ text (toString val) ]
               ) (optionValues (List.length (Maybe.withDefault [] model.team))))
           ]
           , button
-            [ classNames ["btn", "inline-block" ], disabled isDisabled , (onClick Shuffle) ]
-            [ text "Shuffle" ]
+            [ classNames ["btn", "inline-block" ]
+            , disabled isDisabled
+            , onClick Shuffle
+            ] [ text "Shuffle" ]
         ]
       ]
 
@@ -260,7 +302,7 @@ view model =
       div [ classNames ["column",  "u-p-lrg"] ] [
         renderHeader
         , renderDescription
-        , hasTeam model
+        , renderTeam model
         , renderRefreshActions team
       ]
       , div [ class "main" ] [
