@@ -10,9 +10,13 @@ import Html.Attributes exposing (classList)
 import Model exposing (Member, Group)
 
 
-filterMembers : List Member -> List Member
+filterMembers : (Maybe (List Member))-> List Member
 filterMembers team =
-  List.filter (\member -> member.name /= "slackbot" && member.name /= "teambl") team
+  case team of
+    Nothing ->
+      []
+    Just team ->
+      List.filter (\member -> member.name /= "slackbot" && member.name /= "teambl") team
 
 -- createGroups
 -- Iterate a list of lists. Pass each sub list to `createGroup`

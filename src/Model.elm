@@ -19,7 +19,7 @@ type alias Group =
 
 type alias Model =
   { error : Maybe String
-  , groups : List (List Member)
+  , groups : Maybe (List (List Member))
   , isLoading : Bool
   , limit : Int
   , success : Bool
@@ -34,7 +34,7 @@ type alias Model =
 model : Model
 model =
   { error = Nothing
-  , groups = []
+  , groups = Nothing
   , isLoading = False
   , limit = 1
   , success = False

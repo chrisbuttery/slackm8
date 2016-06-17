@@ -11,6 +11,14 @@ import Helpers exposing (createGroups, targetSelectedIndex, classNames)
 import Model exposing (Member, Group, Model)
 import Split exposing (split)
 import Update exposing (Msg(..))
+import Loader
+
+-- nothing
+-- empty element
+
+nothing : Html Msg
+nothing =
+  div [] []
 
 
 -- optionValues
@@ -39,9 +47,18 @@ renderTeam team isLoading =
   div [ class "team" ] [
     h3 [ class "team__title" ] [ text "Team" ]
     , div [ class "team__members" ] (List.map (\member -> renderTeamMember member) team)
-    , renderLoading isLoading
+    , renderLoadingState isLoading
   ]
 
+
+hasTeam : Model -> Html Msg
+hasTeam model =
+  case model.team of
+    Nothing ->
+      nothing
+
+    Just team ->
+      renderTeam team model.isLoading
 
 -- renderTeamMember
 -- render a team member with a sml avatar
@@ -129,7 +146,7 @@ renderActions model =
     div
       [ class "actions--main" ] [
         div [ class "actions--invite" ] [
-          renderChannelActions model.groups model.limit
+          renderChannelActions (Maybe.withDefault [] model.groups) model.limit
         ]
         , div [ class "actions--shuffle" ] [
           input [ class "inline-block", type' "text", placeholder "Type room name", onInput SetTitle ] []
@@ -167,14 +184,17 @@ renderChannelActions groups limit =
     ]
 
 
--- renderLoading
+-- renderLoadingState
 -- rendering a loading state
 
-renderLoading : Bool -> Html Msg
-renderLoading isLoading =
-  div [ classList [("is-loading", True), ("hidden", isLoading == False)] ] [
-    text "is loading"
-  ]
+renderLoadingState : Bool -> Html Msg
+renderLoadingState isLoading =
+  div [
+    classList [
+      ("is-loading", True)
+      , ("hidden", isLoading == False)
+    ]
+  ][ Loader.render ]
 
 
 -- renderMain
@@ -196,7 +216,7 @@ renderMain model =
         p [ class "message" ] [ text "Channels have been created and members have successfully been invited!"]
         , span [ class "close", onClick Close ] [ text "close"]
       ]
-      , renderGroups model.title model.groups
+      , renderGroups model.title (Maybe.withDefault [] model.groups)
     ]
 
 
@@ -240,7 +260,7 @@ view model =
       div [ classNames ["column",  "u-p-lrg"] ] [
         renderHeader
         , renderDescription
-        , renderTeam team model.isLoading
+        , hasTeam model
         , renderRefreshActions team
       ]
       , div [ class "main" ] [

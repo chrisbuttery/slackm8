@@ -18,7 +18,7 @@ type Msg
   | CreateChannelSuccess (List Member) String String
   | FetchMembers
   | FetchMembersFail Http.Error
-  | FetchMembersSucceed (List Member)
+  | FetchMembersSucceed (Maybe (List Member))
   | InviteMemberFail Http.Error
   | InviteMembersToChannels
   | InviteMemberSuccess Bool
@@ -46,7 +46,8 @@ update msg model =
       handleHttpError err model
 
     CreateChannelSuccess group token roomID ->
-      model ! List.map (inviteMember token roomID << .id) group
+      model !
+        List.map (inviteMember token roomID << .id) group
 
     FetchMembers ->
       let
@@ -65,7 +66,7 @@ update msg model =
       in
         ( { model
             | isLoading = False
-            , limit = List.length result
+            , limit = List.length (Maybe.withDefault [] result)
             , team = Just filtered
             , error = Nothing
           }
@@ -76,7 +77,9 @@ update msg model =
       handleHttpError err model
 
     InviteMembersToChannels ->
-      model ! List.indexedMap (\i grp -> createChannel i model.token model.title grp) model.groups
+      model !
+        List.indexedMap (\i grp -> createChannel i model.token model.title grp)
+        (Maybe.withDefault [] model.groups)
 
     InviteMemberSuccess bool ->
       ( { model
@@ -122,7 +125,7 @@ update msg model =
     Split list ->
       let
         model' =
-          { model | groups = (split model.limit list) }
+          { model | groups = Just (split model.limit list) }
       in
         ( model', Ports.modelChange model' )
 
@@ -187,9 +190,9 @@ fetchAllMembers token =
 -- pluck out the members array from the fetchAllMembers response
 -- and iterate required data using decodeMembers
 
-decodeMembersResponse : Json.Decoder (List Member)
+decodeMembersResponse : Json.Decoder (Maybe (List Member))
 decodeMembersResponse =
-  Json.at [ "members" ] (Json.list decodeMembers)
+  Json.maybe <| Json.at [ "members" ] (Json.list decodeMembers)
 
 
 -- decodeMembers

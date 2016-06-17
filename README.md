@@ -101,7 +101,8 @@ Source files located in `/src`
 - Add nicer styling to everything because I've literally done the bare minimum for this demo
 - Add nicer UI interactions
 - ~~decode error response~~
-- style loading state on team refresh
+- ~~convert 'group' to Maybe~~
+- ~~style loading state on team refresh~~
 
 ## Acknowledgements
 
